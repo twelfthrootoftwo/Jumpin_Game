@@ -1,0 +1,16 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Task 11: Find all valid positions" type="JUnit" factoryName="JUnit">
+    <module name="comp1110-ass1" />
+    <option name="PACKAGE_NAME" value="comp1110.ass1" />
+    <option name="MAIN_CLASS_NAME" value="" />
+    <option name="METHOD_NAME" value="" />
+    <option name="TEST_OBJECT" value="pattern" />
+    <patterns>
+      <pattern testClass="comp1110.ass1.NextFoxPositionsTest" />
+      <pattern testClass="comp1110.ass1.NextRabbitPositionsTest" />
+    </patterns>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
