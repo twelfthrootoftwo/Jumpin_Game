@@ -39,8 +39,16 @@ public enum Direction {
      * @return the opposite of this direction.
      */
     public Direction getOpposite() {
+        Direction output=switch(this){
+            case NORTH -> SOUTH;
+            case EAST -> WEST;
+            case SOUTH -> NORTH;
+            case WEST -> EAST;
+            default -> null;
+        };
+
+        return output;
         // FIXME: Task 3
-        return NORTH;
     }
 
     /**

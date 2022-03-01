@@ -29,6 +29,8 @@ public class Position {
      * @param y the y-coordinate
      */
     public Position(int x, int y) {
+        this.x=x;
+        this.y=y;
         // FIXME: Task 1
     }
 
@@ -42,6 +44,8 @@ public class Position {
      *                    the board.
      */
     public Position(String coordinates) {
+        this.x=Integer.parseInt(Character.toString(coordinates.charAt(0)));
+        this.y=Integer.parseInt(Character.toString(coordinates.charAt(1)));
         // FIXME: Task 1
     }
 
@@ -127,8 +131,25 @@ public class Position {
      * @return the new Position after one step
      */
     public Position applyDirection(Direction direction) {
+        int xChange=0;
+        int yChange=0;
+        switch(direction){
+            case NORTH -> yChange=-1;
+            case SOUTH -> yChange=1;
+            case WEST -> xChange=-1;
+            case EAST -> xChange=1;
+        }
+
+        Position newPos=new Position(this.x+xChange,this.y+yChange);
+        //boolean legalMove=newPos.isOnBoard();
+
+        //if (!legalMove){
+        //    newPos.setX(newPos.x-xChange);
+        //    newPos.setY(newPos.y-yChange);
+        //}
+
         // FIXME: Task 5
-        return new Position();
+        return newPos;
     }
 
     /**

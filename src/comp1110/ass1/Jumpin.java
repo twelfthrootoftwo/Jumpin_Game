@@ -282,8 +282,12 @@ public class Jumpin {
      * @return whether the corresponding cell is empty or not
      */
     public boolean isCellEmpty(Position position) {
+        State testCellState=getCell(position);
+        String testVal=testCellState.toString();
+        if(testVal.equals("X")) return true;
+        else return false;
         // FIXME: Task 2
-        return true;
+
     }
 
     /**
