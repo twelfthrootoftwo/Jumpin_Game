@@ -39,9 +39,9 @@ collaboration:
 # Add as many "url+licence+comment" entries as necessary
 # (or remove it altogether if you haven't used any external code)
 code:
-  - comment:
-    url:
-    licence:
+  - comment: Java API documentation used to find additional useful  methods
+    url: https://docs.oracle.com/en/java/javase/17/docs/api/index.html
+    licence: https://download.oracle.com/otndocs/jcp/java_se-17-final-spec/license.html
 
 # Use this to list any assets (artwork, sound, etc) that you used.
 # Provide a comment explaining your use of that asset and the URL
@@ -56,5 +56,5 @@ assets:
 
 
 # sign *your* name and uid here
-name:
-uid:
+name: Natasha Pegler
+uid: u7447030
