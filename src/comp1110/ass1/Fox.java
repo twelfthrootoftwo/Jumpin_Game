@@ -54,6 +54,24 @@ public class Fox {
     }
 
     /**
+     * Sets this fox's head position to be the given position.
+     *
+     * @param p a position
+     */
+    public void setHeadPosition(Position p) {
+        this.headPosition = p;
+    }
+
+    /**
+     * Sets this fox's tail position to be the given position.
+     *
+     * @param p a position
+     */
+    public void setTailPosition(Position p) {
+        this.tailPosition = p;
+    }
+
+    /**
      * Sets the position of the fox's head and tail.
      *
      * @param headPosition the position to move the fox's head to. Note that
