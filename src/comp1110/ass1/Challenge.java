@@ -1,5 +1,7 @@
 package comp1110.ass1;
 
+import java.util.Random;
+
 public class Challenge {
 
     /** The identifying number associated with a challenge. **/
@@ -145,8 +147,13 @@ public class Challenge {
      */
     public static Challenge newChallenge(int difficulty) {
         assert difficulty >= 0 && difficulty <= 4;
+
+        Random random=new Random();
+        int choose=random.nextInt(12);
+        int challengeNum=choose+difficulty*12;
+
         // FIXME: Task 4
-        return CHALLENGES[0];
+        return CHALLENGES[challengeNum];
     }
 
     /**

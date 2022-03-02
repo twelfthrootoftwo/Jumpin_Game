@@ -298,8 +298,44 @@ public class Jumpin {
      * @return whether the current state is a final state
      */
     public boolean isSolution() {
+        Rabbit[] rabbits=getRabbits();
+
+        //find the number of rabbits that have been created
+        //trying to access a method of a nonexistent rabbit will return an exception, so count the number of rabbits that don't trigger exceptions
+        int rabbitNum=0;
+        for(int i=0;i<rabbits.length;i++) {
+            try {
+                //System.out.println("trying");
+                Boolean test=rabbits[i].isInRabbitHole();
+                rabbitNum++;
+            } catch (Exception e) {
+                //System.out.println("Exception caught");
+                break;
+            }
+        }
+        //System.out.println(("number of rabbits: "+rabbitNum));
+
+        Boolean boardSolved=true;
+
+
+        //check each rabbit (that exists) one by one; if any are not in a hole, change boardSolved to false
+        //this won't run for no rabbits, so an extra catch is added below
+        for(int i=0;i<rabbitNum;i++) {
+            if (rabbits[i].isInRabbitHole()) {
+                continue;
+            } else {
+                boardSolved = false;
+                break;
+            }
+        }
+
+        //make solved state False for no rabbits
+        if(rabbitNum==0) {
+            boardSolved=false;
+        }
+
         // FIXME: Task 6
-        return true;
+        return boardSolved;
     }
 
     /**
