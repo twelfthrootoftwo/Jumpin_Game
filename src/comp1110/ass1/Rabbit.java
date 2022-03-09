@@ -62,22 +62,34 @@ public class Rabbit {
         return (correctX && correctY) || middleOfBoard;
     }
 
-    /**
-     * Moves this rabbit to the closest cell to it in a given direction, if
-     * this is possible. It must follow the rules of the game where it can't jump
-     * into a directly adjacent cell or one occupied by another object.
-     *
-     * This method should also return a boolean indicating whether the move
-     * was possible.
-     *
+    /*class to allow canMove function to return both the new position and boolean for whether the move is valid
+
+     */
+    public class MoveResults {
+        //TRUE if the resulting move is valid, FALSE otherwise
+        private Boolean validMove;
+
+        //The new position if the move is valid, original position otherwise
+        private Position newPos;
+
+        public MoveResults(Boolean validMove, Position newPos) {
+            this.validMove=validMove;
+            this.newPos=newPos;
+        }
+
+        // @return whether move is valid
+        public Boolean getValid() { return this.validMove;}
+
+        // @return resulting position
+        public Position getPos() { return this.newPos;}
+
+    }
+
+    /* Returns whether the rabbit can move in the specified direction
      * @param dir   the direction in which to move this rabbit
      * @param board the board which this rabbit occupies
-     *
-     * @return whether the move was possible
      */
-    public boolean makeMove(Direction dir, Jumpin board) {
-        // FIXME: Task 10
-        //set up variable for new position
+    public MoveResults canMove(Direction dir, Jumpin board) {
         Position newPos=new Position(this.getPosition().getX(),this.getPosition().getY());
         Boolean validMove=true;
         System.out.println("Starting pos: "+newPos);
@@ -110,13 +122,38 @@ public class Rabbit {
             validMove=false;
         }
 
+        MoveResults results=new MoveResults(validMove,newPos);
+        return results;
+    }
+
+    /**
+     * Moves this rabbit to the closest cell to it in a given direction, if
+     * this is possible. It must follow the rules of the game where it can't jump
+     * into a directly adjacent cell or one occupied by another object.
+     *
+     * This method should also return a boolean indicating whether the move
+     * was possible.
+     *
+     * @param dir   the direction in which to move this rabbit
+     * @param board the board which this rabbit occupies
+     *
+     * @return whether the move was possible
+     */
+    public boolean makeMove(Direction dir, Jumpin board) {
+        // FIXME: Task 10
+        //See also method canMove and class MoveResults (above)
+
+        //set up variable for move results
+        MoveResults results = this.canMove(dir,board);
+        Position newPos=results.newPos;
+        Boolean validMove=results.validMove;
+
         //if move is valid, move rabbit & update board
         if(validMove) {
             board.setCell(this.getPosition(),State.fromChar('X'));
             this.setPosition(newPos);
             board.setCell(this.getPosition(),this.getType());
         }
-
 
         return validMove;
     }
