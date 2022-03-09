@@ -77,7 +77,48 @@ public class Rabbit {
      */
     public boolean makeMove(Direction dir, Jumpin board) {
         // FIXME: Task 10
-        return true;
+        //set up variable for new position
+        Position newPos=new Position(this.getPosition().getX(),this.getPosition().getY());
+        Boolean validMove=true;
+        System.out.println("Starting pos: "+newPos);
+        System.out.println("Direction: "+dir);
+
+
+        newPos=newPos.applyDirection(dir);
+        //Check if on board first
+        if(newPos.isOnBoard()) {
+            //Then check proposed move has something to jump over
+            if (board.isCellEmpty(newPos)) {
+                validMove = false;
+                System.out.println("Next cell in this dir is empty");
+            } else {
+                //something to jump - go along until fwe find an empty cell
+                while (newPos.isOnBoard() && (!board.isCellEmpty(newPos))) {
+                    newPos = newPos.applyDirection(dir);
+                }
+                //check if move target is on board
+                if (newPos.isOnBoard()) {
+                    System.out.println("Valid move, hopping to new position " + newPos);
+                } else {
+                    System.out.println("No available spaces between current pos and edge of board");
+                    validMove = false;
+                }
+            }
+        } else {
+            //not on board
+            System.out.println("Moving off the edge of board");
+            validMove=false;
+        }
+
+        //if move is valid, move rabbit & update board
+        if(validMove) {
+            board.setCell(this.getPosition(),State.fromChar('X'));
+            this.setPosition(newPos);
+            board.setCell(this.getPosition(),this.getType());
+        }
+
+
+        return validMove;
     }
 
     /**
