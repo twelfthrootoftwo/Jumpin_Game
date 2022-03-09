@@ -1,5 +1,7 @@
 package comp1110.ass1;
 
+import static java.lang.Boolean.logicalXor;
+
 public class Fox {
 
     /** The position of the fox's head. */
@@ -96,7 +98,46 @@ public class Fox {
      */
     public boolean canMove(Direction dir, Jumpin board) {
         // FIXME: Task 8
-        return false;
+        Boolean validMove=true;
+
+        //First check based on direction of fox
+        Direction facing=this.getDirection();
+        if (logicalXor(facing.isVertical(),dir.isVertical())) {
+            //move is in the wrong axis
+            validMove=false;
+            System.out.println("Facing incorrect");
+        }
+
+        //skip other checks if the above failed
+        if(validMove) {
+            //Now get coords of new position occupied
+            Position newPos = new Position();
+            Position newHead = new Position(this.getHeadPosition().getX(),this.getHeadPosition().getY());
+            Position newTail = new Position(this.getTailPosition().getX(),this.getTailPosition().getY());
+
+            newHead=newHead.applyDirection(dir);
+            newTail=newTail.applyDirection(dir);
+
+            //set newPos equal to the new position not currently occupied by the fox (head or tail)
+            if(newHead.equals(this.getTailPosition())) {
+                newPos=newTail;
+            } else if(newTail.equals(this.getHeadPosition())) {
+                newPos=newHead;
+            }
+
+            //check outside board
+            if(!newPos.isOnBoard()) {
+                validMove=false;
+                System.out.println("Move off board");
+            } else if(!board.isCellEmpty(newPos)){
+                //check if already occupied
+                validMove=false;
+                System.out.println("New position occupied");
+            }
+
+        }
+
+        return validMove;
     }
 
     /**
