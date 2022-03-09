@@ -131,6 +131,14 @@ public class Fox {
      * @return the String encoding of the action in the given direction
      */
     public String actionToString(Direction dir) {
+        direction dir=this.getDirection();
+        char unit="F".charAt(0);
+        char direction;
+        switch (dir) {
+            case North ->{};
+            case South ->{};
+
+        }
         // FIXME: Task 7
         return "FNN";
     }
