@@ -94,7 +94,12 @@ public class Rabbit {
      */
     public String actionToString(Direction dir) {
         // FIXME: Task 7
-        return "CN";
+        char unit=this.getType().toString().charAt(0);
+        char move=dir.getLetter().charAt(0);
+        char[] chars={unit, move};
+        String output=new String(chars);
+
+        return output;
     }
 
     @Override
