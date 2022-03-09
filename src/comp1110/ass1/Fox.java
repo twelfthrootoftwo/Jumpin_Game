@@ -132,7 +132,8 @@ public class Fox {
             } else if(!board.isCellEmpty(newPos)){
                 //check if already occupied
                 validMove=false;
-                System.out.println("New position occupied");
+                System.out.println("New position occupied - pos "+newPos);
+                board.printBoardState();
             }
 
         }
@@ -156,7 +157,20 @@ public class Fox {
      */
     public boolean makeMove(Direction dir, Jumpin board) {
         // FIXME: Task 9
-        return false;
+        Boolean validMove=this.canMove(dir,board);
+
+        if(validMove) {
+            //clear current positions
+            board.setCell(this.getHeadPosition(),State.fromChar('X'));
+            board.setCell(this.getTailPosition(),State.fromChar('X'));
+
+            //apply new positions
+            this.setNewLoc(this.getHeadPosition().applyDirection(dir));
+            board.setCell(this.getHeadPosition(),State.fromChar('F'));
+            board.setCell(this.getTailPosition(),State.fromChar('F'));
+        }
+
+        return validMove;
     }
 
     /**
