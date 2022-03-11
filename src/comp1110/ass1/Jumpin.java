@@ -1,5 +1,7 @@
 package comp1110.ass1;
 
+import java.util.Arrays;
+
 public class Jumpin {
 
     /** The colour of each rabbit. */
@@ -339,6 +341,24 @@ public class Jumpin {
     }
 
     /**
+     * Adds a new position to the end of a position array
+     *
+     * @param posArray - old array of positions to expand
+     * @param newPos - new position to be added
+     * @return the original array with an additional element at the end
+     */
+    public Position[] addPosToArray(Position[] posArray, Position newPos) {
+        Position[] newArray=new Position[posArray.length+1];
+        for(int i=0;i<posArray.length;i++) {
+            newArray[i]=posArray[i];
+        }
+        newArray[posArray.length]=newPos;
+
+        return newArray;
+    }
+
+
+    /**
      * Returns all valid positions that each rabbit can jump to in this game
      * state.
      *
@@ -370,7 +390,42 @@ public class Jumpin {
      */
     public Position[][] getValidNextRabbitPositions() {
         // FIXME: Task 11
-        return new Position[][]{{}, {}, {}};
+        Rabbit[] rabbits=this.getRabbits();
+        Position[][] possibleMoves=new Position[3][];
+        Direction[] directions=Direction.values();
+
+        //loop over rabbits
+        for(int rabbitCounter=0;rabbitCounter<rabbits.length;rabbitCounter++) {
+            try {//to check it's not a null rabbit
+                int moveCounter=0;
+                Position[] thisRabbitMoves=new Position[0];
+
+                //iterate over directions
+                for(int dirCounter=0;dirCounter<directions.length;dirCounter++) {
+
+                    //use MoveResults and canMove as defined in the Rabbit class file
+                    //MoveResults is a class that records whether a move was possible and what the outcome position is
+                    Rabbit.MoveResults canMove=new Rabbit.MoveResults();
+                    canMove=rabbits[rabbitCounter].canMove(directions[dirCounter],this);
+
+                    //if valid move in this direction, add to the outcomes - otherwise add nothing
+                    if(canMove.getValid()) {
+                        thisRabbitMoves=addPosToArray(thisRabbitMoves,canMove.getPos());//defined above, this is just an array expansion function
+                        moveCounter++;
+                    }
+                }
+                //add to main array
+                possibleMoves[rabbitCounter]=thisRabbitMoves;
+
+
+            } catch(NullPointerException e) {
+                //not this many rabbits - leave possibleMoves blank and don't check any further rabbits
+                break;
+            }
+        }
+
+
+        return possibleMoves;
     }
 
     /**
