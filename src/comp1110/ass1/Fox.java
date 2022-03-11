@@ -2,7 +2,7 @@ package comp1110.ass1;
 
 import static java.lang.Boolean.logicalXor;
 
-public class Fox {
+public class Fox implements MovingPiece {
 
     /** The position of the fox's head. */
     private Position headPosition;
@@ -86,19 +86,16 @@ public class Fox {
     }
 
     /**
-     * Checks whether the fox can make a valid move in a given direction on
-     * a given board, accounting for other objects as well as the edge of the
-     * board.
+     * Checks fox piece movement and decides whether move is possible
      *
-     * @param dir   the given direction in which to check for movement
-     * @param board the board on which the fox is situated
-     *
-     * @return whether the fox can move in the given direction on the given
-     *         board
+     * @param dir - the direction of intended movement
+     * @param board - the current board state
+     * @return a moveResults contianing a boolean for whether the move was possible and the new position of the fox's head
      */
-    public boolean canMove(Direction dir, Jumpin board) {
-        // FIXME: Task 8
+    public MoveResults moveForecast(Direction dir, Jumpin board) {
         Boolean validMove=true;
+        Position newHead = new Position(this.getHeadPosition().getX(),this.getHeadPosition().getY());
+        Position newTail = new Position(this.getTailPosition().getX(),this.getTailPosition().getY());
 
         //First check based on direction of fox
         Direction facing=this.getDirection();
@@ -112,8 +109,7 @@ public class Fox {
         if(validMove) {
             //Now get coords of new position occupied
             Position newPos = new Position();
-            Position newHead = new Position(this.getHeadPosition().getX(),this.getHeadPosition().getY());
-            Position newTail = new Position(this.getTailPosition().getX(),this.getTailPosition().getY());
+
 
             newHead=newHead.applyDirection(dir);
             newTail=newTail.applyDirection(dir);
@@ -137,8 +133,27 @@ public class Fox {
             }
 
         }
+        MoveResults moveResult=new MoveResults(validMove, newHead);
+        return moveResult;
+    }
 
-        return validMove;
+    /**
+     * Checks whether the fox can make a valid move in a given direction on
+     * a given board, accounting for other objects as well as the edge of the
+     * board.
+     *
+     * @param dir   the given direction in which to check for movement
+     * @param board the board on which the fox is situated
+     *
+     * @return whether the fox can move in the given direction on the given
+     *         board
+     */
+    public boolean canMove(Direction dir, Jumpin board) {
+        // FIXME: Task 8
+        //the actual logic has been moved into moveForecast method above to allow implementing the MovingPiece method
+        MoveResults move=moveForecast(dir,board);
+        return move.getValid();
+
     }
 
     /**

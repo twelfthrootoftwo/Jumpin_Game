@@ -357,6 +357,51 @@ public class Jumpin {
         return newArray;
     }
 
+    /**
+     * Checks for possible movement options of pieces in an input arrya
+     * All members of the input array must implement the MovingPiece interface, and this function uses the canMove method of the interface
+     * This allows it to be independent of the movement rules of the pieces to check
+     *
+     * @param animals an array of rabbit or fox objects (pieces that implement the MovingPiece interface)
+     * @return a 2d array containing the possible positions of all input pieces in the animals array
+     */
+    public Position[][] availableMoves(MovingPiece[] animals) {
+        Position[][] possibleMoves=new Position[animals.length][];
+        Direction[] directions=Direction.values();
+
+        //loop over rabbits
+        for(int animalCounter=0;animalCounter<animals.length;animalCounter++) {
+            try {//to check it's not a null rabbit
+                int moveCounter=0;
+                Position[] thisRabbitMoves=new Position[0];
+
+                //iterate over directions
+                for(int dirCounter=0;dirCounter<directions.length;dirCounter++) {
+
+                    //use MoveResults and canMove as defined in the Rabbit class file
+                    //MoveResults is a class that records whether a move was possible and what the outcome position is
+                    Rabbit.MoveResults canMove=new Rabbit.MoveResults();
+                    canMove=rabbits[animalCounter].moveForecast(directions[dirCounter],this);
+
+                    //if valid move in this direction, add to the outcomes - otherwise add nothing
+                    if(canMove.getValid()) {
+                        thisRabbitMoves=addPosToArray(thisRabbitMoves,canMove.getPos());//defined above, this is just an array expansion function
+                        moveCounter++;
+                    }
+                }
+                //add to main array
+                possibleMoves[animalCounter]=thisRabbitMoves;
+
+
+            } catch(NullPointerException e) {
+                //not this many rabbits - leave possibleMoves blank and don't check any further rabbits
+                break;
+            }
+        }
+
+        return possibleMoves;
+    }
+
 
     /**
      * Returns all valid positions that each rabbit can jump to in this game
@@ -391,39 +436,9 @@ public class Jumpin {
     public Position[][] getValidNextRabbitPositions() {
         // FIXME: Task 11
         Rabbit[] rabbits=this.getRabbits();
-        Position[][] possibleMoves=new Position[3][];
-        Direction[] directions=Direction.values();
 
-        //loop over rabbits
-        for(int rabbitCounter=0;rabbitCounter<rabbits.length;rabbitCounter++) {
-            try {//to check it's not a null rabbit
-                int moveCounter=0;
-                Position[] thisRabbitMoves=new Position[0];
-
-                //iterate over directions
-                for(int dirCounter=0;dirCounter<directions.length;dirCounter++) {
-
-                    //use MoveResults and canMove as defined in the Rabbit class file
-                    //MoveResults is a class that records whether a move was possible and what the outcome position is
-                    Rabbit.MoveResults canMove=new Rabbit.MoveResults();
-                    canMove=rabbits[rabbitCounter].canMove(directions[dirCounter],this);
-
-                    //if valid move in this direction, add to the outcomes - otherwise add nothing
-                    if(canMove.getValid()) {
-                        thisRabbitMoves=addPosToArray(thisRabbitMoves,canMove.getPos());//defined above, this is just an array expansion function
-                        moveCounter++;
-                    }
-                }
-                //add to main array
-                possibleMoves[rabbitCounter]=thisRabbitMoves;
-
-
-            } catch(NullPointerException e) {
-                //not this many rabbits - leave possibleMoves blank and don't check any further rabbits
-                break;
-            }
-        }
-
+        //availableMoves is defined above
+        Position[][] possibleMoves=availableMoves(rabbits);
 
         return possibleMoves;
     }
@@ -460,7 +475,10 @@ public class Jumpin {
      */
     public Position[][] getValidNextFoxPositions() {
         // FIXME: Task 11
-        return new Position[][]{{}, {}};
+        Fox[] foxes=this.getFoxes();
+        Position[][] possibleMoves=availableMoves(foxes);
+
+        return possibleMoves;
     }
 
     /**
