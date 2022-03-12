@@ -367,34 +367,46 @@ public class Jumpin {
      */
     public Position[][] availableMoves(MovingPiece[] animals) {
         Position[][] possibleMoves=new Position[animals.length][];
-        Direction[] directions=Direction.values();
+        Direction[] directions=new Direction[4];
+
 
         //loop over rabbits
         for(int animalCounter=0;animalCounter<animals.length;animalCounter++) {
-            try {//to check it's not a null rabbit
+            try {//to check it's not a null piece
                 int moveCounter=0;
-                Position[] thisRabbitMoves=new Position[0];
+                Position[] thisPieceMoves=new Position[0];
+
+                if (animals[animalCounter] instanceof Rabbit) {
+                    directions=Direction.values();
+                } else if (animals[animalCounter] instanceof Fox) {
+                    Fox f= (Fox) animals[animalCounter];
+                    directions=new Direction[]{f.getDirection(), f.getDirection().getOpposite()};
+                } else {
+                    System.out.println("No move checking logic exists for this piece type");
+                    return new Position[0][0];
+                }
+
 
                 //iterate over directions
                 for(int dirCounter=0;dirCounter<directions.length;dirCounter++) {
 
                     //use MoveResults and canMove as defined in the Rabbit class file
                     //MoveResults is a class that records whether a move was possible and what the outcome position is
-                    Rabbit.MoveResults canMove=new Rabbit.MoveResults();
-                    canMove=rabbits[animalCounter].moveForecast(directions[dirCounter],this);
+                    MovingPiece.MoveResults canMove=new MovingPiece.MoveResults();
+                    canMove=animals[animalCounter].moveForecast(directions[dirCounter],this);
 
                     //if valid move in this direction, add to the outcomes - otherwise add nothing
                     if(canMove.getValid()) {
-                        thisRabbitMoves=addPosToArray(thisRabbitMoves,canMove.getPos());//defined above, this is just an array expansion function
+                        thisPieceMoves=addPosToArray(thisPieceMoves,canMove.getPos());//defined above, this is just an array expansion function
                         moveCounter++;
                     }
                 }
                 //add to main array
-                possibleMoves[animalCounter]=thisRabbitMoves;
+                possibleMoves[animalCounter]=thisPieceMoves;
 
 
             } catch(NullPointerException e) {
-                //not this many rabbits - leave possibleMoves blank and don't check any further rabbits
+                //not this many pieces - leave possibleMoves blank and don't check any further rabbits
                 break;
             }
         }

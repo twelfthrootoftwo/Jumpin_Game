@@ -87,6 +87,7 @@ public class Fox implements MovingPiece {
 
     /**
      * Checks fox piece movement and decides whether move is possible
+     * This is an implementation of the Moving Piece interface
      *
      * @param dir - the direction of intended movement
      * @param board - the current board state
