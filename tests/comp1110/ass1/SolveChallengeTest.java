@@ -50,8 +50,8 @@ public class SolveChallengeTest {
 
     @Test
     public void testWizardChallenge() {
-        assertTimeoutPreemptively(Duration.ofMillis(1000), () -> {
-            test("C04B40G00M2244FE11S13", Challenge.CHALLENGES[48]);
+        assertTimeoutPreemptively(Duration.ofMillis(4000), () -> {
+            test("C04B00G40M302203FE11", Challenge.CHALLENGES[59]);
         });
     }
 
