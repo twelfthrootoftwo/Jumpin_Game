@@ -1,6 +1,7 @@
 package comp1110.ass1;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 public class Jumpin {
 
@@ -381,6 +382,9 @@ public class Jumpin {
                 } else if (animals[animalCounter] instanceof Fox) {
                     Fox f= (Fox) animals[animalCounter];
                     directions=new Direction[]{f.getDirection(), f.getDirection().getOpposite()};
+                } else if(Objects.isNull(animals[animalCounter])) {
+                    //not this many pieces
+                    continue;
                 } else {
                     System.out.println("No move checking logic exists for this piece type");
                     return new Position[0][0];
