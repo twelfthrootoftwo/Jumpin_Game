@@ -3,6 +3,7 @@ package comp1110.ass1;
 public interface MovingPiece {
 
     public MoveResults moveForecast(Direction dir, Jumpin board);
+    public boolean makeMove(Direction dir, Jumpin board);
 
     /**
      * class to allow canMove function to return both the new position and boolean for whether the move is valid
@@ -30,4 +31,6 @@ public interface MovingPiece {
         public Position getPos() { return this.newPos;}
 
     }
+
+
 }

@@ -498,6 +498,21 @@ public class Jumpin {
     }
 
     /**
+     * Simple function to return a copy of the current Jumpin (board state and pieces)
+     * This allows us to use the movement logic stored in the piece classes
+     * @return a new Jumpin which is a copy of the current one
+     */
+    public Jumpin duplicate() {
+        Jumpin newBoard = new Jumpin(0);
+        newBoard.setState(this.state);
+        return newBoard;
+    }
+
+    public void constructTree() {
+
+    }
+
+    /**
      * Solve the Challenge by finding a shortest solution, i.e. one with
      * the fewest number actions possible.
      *
