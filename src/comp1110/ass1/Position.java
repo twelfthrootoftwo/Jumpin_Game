@@ -166,4 +166,31 @@ public class Position {
         return this.equals(pos);
     }
 
+    /**
+     * Given two positions, returns the direction from one to the other
+     * If the positions are the same, or if they are not aligned (offset in both X and Y axes), returns null
+     * @param startPos - Position of starting point
+     * @param endPos - Position of end point
+     * @return the Direction from start to end position
+     */
+    public static Direction findDirection(Position startPos, Position endPos) {
+        int xDiff=endPos.getX()-startPos.getX();
+        int yDiff=endPos.getY()-startPos.getY();
+        Direction dir = Direction.fromChar('N');
+
+        if(xDiff==0^yDiff==0) {
+            if(yDiff>0) dir=Direction.fromChar('S');
+            if(yDiff<0) dir=Direction.fromChar('N');
+            if(xDiff>0) dir=Direction.fromChar('E');
+            if(xDiff<0) dir=Direction.fromChar('W');
+
+        } else {
+            System.out.println("Not a valid direction");
+            return null;
+        }
+        System.out.println("Identified direction from "+startPos+" to "+endPos+" as "+dir);
+
+        return dir;
+    }
+
 }

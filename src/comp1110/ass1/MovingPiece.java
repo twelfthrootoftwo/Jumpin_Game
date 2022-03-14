@@ -4,6 +4,8 @@ public interface MovingPiece {
 
     public MoveResults moveForecast(Direction dir, Jumpin board);
     public boolean makeMove(Direction dir, Jumpin board);
+    public Position getPosition();
+    public String actionToString(Direction dir);
 
     /**
      * class to allow canMove function to return both the new position and boolean for whether the move is valid

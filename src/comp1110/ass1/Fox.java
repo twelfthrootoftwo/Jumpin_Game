@@ -49,6 +49,12 @@ public class Fox implements MovingPiece {
     }
 
     /**
+     * This is to allow the fox to implement the MovingPiece interface
+     * @return the position of the fox's head
+     */
+    public Position getPosition() {return this.getHeadPosition();}
+
+    /**
      * @return the direction in which the fox faces.
      */
     public Direction getDirection() {
@@ -103,7 +109,7 @@ public class Fox implements MovingPiece {
         if (logicalXor(facing.isVertical(),dir.isVertical())) {
             //move is in the wrong axis
             validMove=false;
-            System.out.println("Facing incorrect");
+            //System.out.println("Facing incorrect");
         }
 
         //skip other checks if the above failed
@@ -125,11 +131,11 @@ public class Fox implements MovingPiece {
             //check outside board
             if(!newPos.isOnBoard()) {
                 validMove=false;
-                System.out.println("Move off board");
+                //System.out.println("Move off board");
             } else if(!board.isCellEmpty(newPos)){
                 //check if already occupied
                 validMove=false;
-                System.out.println("New position occupied - pos "+newPos);
+                //System.out.println("New position occupied - pos "+newPos);
                 board.printBoardState();
             }
 

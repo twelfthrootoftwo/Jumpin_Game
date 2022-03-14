@@ -1,5 +1,7 @@
 package comp1110.ass1;
 
+import comp1110.ass1.gui.MoveNode;
+
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -359,7 +361,7 @@ public class Jumpin {
     }
 
     /**
-     * Checks for possible movement options of pieces in an input arrya
+     * Checks for possible movement options of pieces in an input array
      * All members of the input array must implement the MovingPiece interface, and this function uses the canMove method of the interface
      * This allows it to be independent of the movement rules of the pieces to check
      *
@@ -371,7 +373,7 @@ public class Jumpin {
         Direction[] directions=new Direction[4];
 
 
-        //loop over rabbits
+        //loop over moving pieces
         for(int animalCounter=0;animalCounter<animals.length;animalCounter++) {
             try {//to check it's not a null piece
                 int moveCounter=0;
@@ -394,7 +396,7 @@ public class Jumpin {
                 //iterate over directions
                 for(int dirCounter=0;dirCounter<directions.length;dirCounter++) {
 
-                    //use MoveResults and canMove as defined in the Rabbit class file
+                    //use MoveResults and canMove as defined in the MovingPiece interface
                     //MoveResults is a class that records whether a move was possible and what the outcome position is
                     MovingPiece.MoveResults canMove=new MovingPiece.MoveResults();
                     canMove=animals[animalCounter].moveForecast(directions[dirCounter],this);
@@ -508,9 +510,6 @@ public class Jumpin {
         return newBoard;
     }
 
-    public void constructTree() {
-
-    }
 
     /**
      * Solve the Challenge by finding a shortest solution, i.e. one with
@@ -525,7 +524,135 @@ public class Jumpin {
      */
     public String[] solve() {
         // FIXME: Task 12
-        return new String[]{"", ""};
+
+        //get copy of board for solver to work on
+        System.out.println("Preparing board for solver:");
+        Jumpin solverBoard=this.duplicate();
+
+        //create an array of all rabbits and foxes
+        System.out.println("Creating array of MovingPieces:");
+        MovingPiece[] rabbits=solverBoard.getRabbits();
+        MovingPiece[] foxes=solverBoard.getFoxes();
+        MovingPiece[] pieces=new MovingPiece[rabbits.length+foxes.length];
+        for(int i=0;i<rabbits.length;i++) {
+            pieces[i]=rabbits[i];
+        }
+        for(int i=0;i<foxes.length;i++) {
+            pieces[rabbits.length+i]=foxes[i];
+        }
+
+        //starter MoveNode with the original board state
+        System.out.println("Creating start node:");
+        MoveNode startNode=new MoveNode(solverBoard);
+
+        //run move tree to find a solution state
+        System.out.println("Beginning solution search");
+        MoveNode solutionNode=createTree(startNode,pieces,solverBoard);
+
+        //get string of solved board state
+        System.out.println("Generating string for solved state");
+        String solvedBoard=solverBoard.stateToString(false);
+
+        //get string of moves taken
+        System.out.println("Generating string for move list");
+        String actions=solutionNode.moveList("");
+
+        String[] output=new String[] {solvedBoard,actions};
+
+        return output;
+    }
+
+    public MoveNode createTree(MoveNode startNode, MovingPiece[] pieces, Jumpin board) {
+        MoveNode finalNode=new MoveNode(board);
+        //first check whether this is a solution
+        if(startNode.getEndNode()) {
+            System.out.println("Found solution!");
+            finalNode=startNode;
+        } else {
+
+            //get available moves for all pieces
+            System.out.println("Preparing list of moves:");
+            Position[][] possibleMoves = availableMoves(pieces);
+            int availableMoves = 0;
+
+            //get directions corresponding to available moves
+            System.out.println("Finding move directions corresponding to identified moves:");
+            Direction[][] possibleDirs = new Direction[possibleMoves.length][];
+            for (int i = 0; i < possibleMoves.length; i++) {
+                //if no piece for this i, skip
+                if(Objects.isNull(possibleMoves[i])){
+                    break;
+                }
+
+                //expand possibleDirs to match size of inputs
+                possibleDirs[i]=new Direction[possibleMoves[i].length];
+
+                //now run over moves
+                for (int j = 0; j < possibleMoves[i].length; j++) {
+                    if (!Objects.isNull(possibleMoves[i][j])) {
+                        Direction testDir=Position.findDirection(pieces[i].getPosition(), possibleMoves[i][j]);
+
+                        //test this is not the oppposite of the last move
+                        boolean prevMove=!Objects.isNull(startNode.getLastMove());
+                        boolean checkDir=false;
+                        boolean checkPiece=false;
+                        if(prevMove) {
+                            checkDir =testDir.toString().equals(startNode.getLastReverse());
+                            checkPiece=pieces[i].equals(startNode.getLastPiece());
+                        }
+                        if (checkDir&&checkPiece) {
+                            System.out.println("Skipping reverse of previous move");
+                            continue;
+                        } else {
+                            System.out.println("Found a move");
+                            possibleDirs[i][j] = testDir;
+                            availableMoves++;
+                        }
+                    }
+                }
+            }
+
+            System.out.println("Checking state of iteration:");
+            if (availableMoves == 0|startNode.getGoBack()) {
+                //No available moves, or have checked all possible moves - return to previous node
+                //Since all moveNodes share the same board in memory, reverse previous move to restore the board state
+                //(all moves are reversible)
+                System.out.println("No moves possible/available, go back");
+                MoveNode throwaway=startNode.newMove(startNode.getLastPiece(),startNode.getLastReverse(),board);
+                return startNode.getPrevNode();
+            } else {
+                //get move index of next move to check
+                int pieceIndex=startNode.getPieceCount();
+                int moveIndex=startNode.getMoveCount();
+
+                ///increment tested moveset
+                System.out.println("Incrementing move test tracker:");
+                if(possibleDirs[pieceIndex].length<moveIndex+2) {
+                    if(Objects.isNull(possibleDirs[pieceIndex+1])) {
+                        //no more moves or pieces to check - go back to previous node
+                        startNode.checkedAll();
+                    }
+                    //no more moves to test for this piece
+                    startNode.incrementPiece();
+                } else {
+                    //another move to check for this piece
+                    startNode.incrementMove();
+                }
+
+                //perform next identified move
+                System.out.println("Performing move to test:");
+                MoveNode newNode=startNode.newMove(pieces[pieceIndex],possibleDirs[pieceIndex][moveIndex],board);
+
+                //recursion
+                System.out.println("Recurse over latest move:");
+                finalNode=createTree(newNode,pieces,board);
+
+
+            }
+        }
+        return finalNode;
+
+
     }
 
 }
